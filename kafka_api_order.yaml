@@ -1,0 +1,136 @@
+asyncapi: 3.0.0
+info:
+  title: API Сервис заказов
+  version: 1.0.0
+  description: Получение сообщений о новом заказе. Отправка сообщений об изменении статуса заказа.
+
+servers:
+  server1:
+    host: central.mykafkacluster.org:8092
+    description: Кафка брокер (сервер 1)
+    protocol: kafka
+  server2:
+    host: west.mykafkacluster.org:8092
+    description: Кафка брокер (сервер 2)
+    protocol: kafka
+  server3:
+    host: east.mykafkacluster.org:8092
+    description: Кафка брокер (сервер 3)
+    protocol: kafka
+
+operations:
+  onOrderCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/orderCreated'
+  onOrderStatusChanged:
+    action: send
+    channel:
+      $ref: '#/channels/orderStatusChanged'    
+
+channels:
+  orderCreated:
+    description: В этот канал поступают сообщения о новых заказах
+    address: order_сreated
+    messages:
+      orderCreated:
+        $ref: '#/components/messages/orderCreated'
+  
+  orderStatusChanged:
+    description: В этот канал отправляются сообщения об изменении статуса заказа
+    address: order_status_changed
+    messages:
+      orderStatusChanged:
+        $ref: '#/components/messages/orderStatusChanged'      
+
+components:
+  messages:
+    orderCreated:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+            description: UUID заказа
+            examples:
+              - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
+          customerId:
+            type: integer
+            description: UUID покупателя
+            examples:
+              - 251931ca-f4be-409c-beb8-be003b65e309
+          orderDetails:
+              $ref: '#/components/messages/orderDetails/payload'     
+          createdAt:
+            type: string
+            description: Дата и время создания заказа
+            examples:
+              - '2025-08-19T12:17:34Z'
+
+    orderStatusChanged:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+            description: UUID заказа
+            examples:
+              - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
+          customerId:
+            type: integer
+            description: UUID покупателя
+            examples:
+              - 251931ca-f4be-409c-beb8-be003b65e309
+          statusId:
+            type: integer
+            description: Id cтатуса заказа
+            examples:
+              - 3
+          status:
+            type: string
+            description: Статус заказа
+            examples:
+              - Возврат на склад
+          comment:
+            type: string
+            description: Комментарий курьера
+            examples:
+              - 'Покупатель не отвечает на звонки'
+          orderDetails:
+            $ref: '#/components/messages/orderDetails/payload'
+          createdAt:
+            type: string
+            description: Дата и время создания заказа
+            examples:
+              - '2025-08-19T12:17:34Z'          
+
+    orderDetails:
+      payload:
+        type: object
+        description: Детали заказа
+        properties:
+          orderNumber:
+            type: integer
+            description: Номер заказа
+            examples:
+              - 741
+          address:
+            type: string
+            description: Адрес доставки
+            examples:
+              - г. Москва, Ленинский проспект 37, кв. 11
+          customerName:
+            type: string
+            description: Имя покупателя
+            examples:
+              - Иван Петров
+          customerPhone:
+            type: string
+            description: Телефон покупателя
+            examples:
+               - +7(910)564-88-77
+          comment:
+            type: string
+            description: Комментарий покупателя
+            examples:
+              - 'Позвоните за 30 минут до приезда'          
