@@ -1,0 +1,356 @@
+openapi: 3.0.4
+info:
+  title: Мобильное приложение Курьер OpenAPI 3.0 спецификация
+  description: API для мобильного приложения сотрудников службы доставки. Предоставляет методы работы с профилем пользователя и методы для работы с заказами.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Dev server
+
+tags:
+  - name: user
+    description: Методы работы с профилем пользователя
+  - name: orders
+    description: Методы работы с заказами
+
+paths:
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Вход пользователя в систему
+      operationId: login
+      requestBody:
+        description: Данные авторизации пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreds'
+        required: true
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Неверные имя пользователя/пароль
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /user/logout:
+    post:
+      tags:
+        - user
+      summary: Выход пользователя из системы
+      operationId: logout
+      requestBody:
+        description: Данные пользователя
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  userId:
+                    type: string
+                    description: UUID пользователя
+                    example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+        required: true
+      responses:
+        '200':
+          description: Успешный выход из системы
+        '401':
+          description: Токен доступа отсутствует или недействителен   
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+          - bearerAuth: []  
+ 
+  /user/{userId}:            
+    put:
+      tags:
+        - user
+      summary: Обновление данных пользователя
+      operationId: updateUserById
+      parameters:
+        - name: userId
+          in: path
+          description: UUID пользователя
+          required: true
+          schema:
+            type: string
+            example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+      requestBody:
+        description: Измененные данные пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Данные пользователя успешно обновлены
+        '400':
+          description: Неверный запрос
+        '401':
+          description: Токен доступа отсутствует или недействителен  
+        '404':
+          description: Пользователь не найден
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []         
+   
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: Получение списка заказов, назначенных на пользователя
+      operationId: getOrders
+      parameters:
+        - name: userId
+          in: query
+          description: UUID пользователя
+          required: true
+          schema:
+            type: string
+            example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+      responses:
+        '200':
+          description: Успешный ответ со списком заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          description: Токен доступа отсутствует или недействителен  
+        '404':
+          description: Пользователь не найден
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: [] 
+    
+  /orders/{orderId}:  
+    get:
+      tags:
+        - orders
+      summary: Получение данных одного заказа
+      operationId: getOrderById
+      parameters:
+        - name: orderId
+          in: path
+          description: UUID заказа
+          required: true
+          schema:
+            type: string
+            example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+      responses:
+        '200':
+          description: Успешный ответ с одним заказом
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          description: Токен доступа отсутствует или недействителен  
+        '404':
+          description: Пользователь не найден
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+                
+    put:
+      tags:
+        - orders
+      summary: Обновление данных одного заказа
+      operationId: updateOrderById
+      parameters:
+        - name: orderId
+          in: path
+          description: UUID заказа
+          required: true
+          schema:
+            type: string
+            example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+      requestBody:
+        description: Обновление данных заказа
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      responses:
+        '200':
+          description: Успешное обновление заказа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          description: Токен доступа отсутствует или недействителен  
+        '404':
+          description: Пользователь не найден
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+                
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+        userId:
+          type: string
+          example: 'e0a376fb-985f-4f2f-8c37-871930c5638c'
+        details:
+          type: object
+          properties:
+            quantity:
+              type: integer
+              format: int32
+              example: 7
+            address:
+              type: string
+              example: 'Северный мкр., ул.Ленина 14, оф.4' 
+            coordinates:
+              type: string
+              example: '55.861161, 37.449751'  
+            shipDate:
+              type: string
+              format: date-time
+              example: '2025-08-015T12:50:30+01'
+            deliveryDate:
+              type: string
+              format: date-time
+              example: '2025-08-035T12:50:30+01'  
+            status:
+              type: string
+              description: Статус заказа
+              example: 'в пути'
+              enum:
+                - 'новый'
+                - 'в пути'
+                - 'доставлен'
+                - 'возврат на склад'
+            clientComment:
+              type: string
+              example: 'Позвонить за час до приезда'
+            courierComment:
+              type: string
+              example: 'На звонки не отвечает'  
+            complete:
+              type: boolean
+          required:
+            - quantity
+            - shipDate  
+            - deliveryDate
+            - status
+            - complete
+      required:
+        - id  
+        - userId 
+        - details
+
+    UserCreds:
+      type: object
+      properties:
+        username:
+          type: string
+          example: 'bestcourier'
+        password:
+          type: string
+          example: '12345'
+      required:
+        - username
+        - password    
+        
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '673f06bf-9ee5-4d6b-b5a2-524d387c3f74'
+        username:
+          type: string
+          example: 'bestcourier'
+        firstName:
+          type: string
+          example: 'Иван'
+        lastName:
+          type: string
+          example: 'Петров'
+        email:
+          type: string
+          example: 'petrov@email.com'
+        password:
+          type: string
+          example: '12345'
+        phone:
+          type: string
+          example: '+79008007766'
+      required:
+        - id
+        - username 
+        - firstName
+        - password
+        - phone
+    
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: '403'
+        message:
+          type: string
+          example: 'Доступ запрещен'
+      required:
+        - code
+        - message
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
