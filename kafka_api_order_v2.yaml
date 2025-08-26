@@ -1,0 +1,165 @@
+asyncapi: 2.6.0
+id: https://github.com/anna-it-sa/courier-delivery-service
+
+info:
+  title: API Сервис заказов
+  description: Получение сообщений о новом заказе. Отправка сообщений об изменении статуса заказа.
+  version: 1.0.0
+
+  contact:
+    name: author
+    email: email@gmail.com
+    url: https://github.com/anna-it-sa
+  
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+tags:
+- name: orders 
+- name: asyncapi v2.6.0
+defaultContentType: application/json
+
+servers:  
+  eventstreams:
+    url: es-kafka-bootstrap-eventstreams.com:443
+    protocol: kafka-secure
+    protocolVersion: 3.3.0    
+    description: Кафка кластер
+    security:
+      - kafkaEventStreams: []        
+        
+channels:
+  orderCreated:
+    description: В этот канал поступают сообщения о новых заказах
+    subscribe:
+      operationId: onOrderCreated         
+      tags:
+        - name: orders       
+      message:
+        $ref: '#/components/messages/orderCreated' 
+        schemaFormat: application/vnd.aai.asyncapi+yaml;version=2.6.0
+        contentType: application/jso
+  
+  orderStatusChanged:
+    description: В этот канал отправляются сообщения об изменении статуса заказа
+    publish:
+      operationId: onOrderStatusChanged         
+      tags:
+        - name: orders       
+      message:        
+        $ref: '#/components/messages/orderStatusChanged' 
+        schemaFormat: application/vnd.aai.asyncapi+yaml;version=2.6.0
+        contentType: application/json  
+
+components:
+  messages:
+    orderCreated:
+      messageId: orderCreatedMessage
+      name: orderCreated
+      title: Сообщение о создании нового заказа
+      summary: Сообщение содержит детали нового заказа
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: string
+            description: UUID заказа
+            examples:
+              - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
+          customerId:
+            type: string
+            description: UUID покупателя
+            examples:
+              - 251931ca-f4be-409c-beb8-be003b65e309
+          orderDetails:
+              $ref: '#/components/messages/orderDetails/payload'     
+          createdAt:
+            type: string
+            description: Дата и время создания заказа
+            examples:
+              - '2025-08-19T12:17:34Z'
+
+    orderStatusChanged:
+      messageId: orderStatusChangedMessage
+      name: orderStatusChanged
+      title: Cообщение об изменении статуса заказа
+      summary: Сообщение содержит детали измененного заказа
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: string
+            description: UUID заказа
+            examples:
+              - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
+          customerId:
+            type: string
+            description: UUID покупателя
+            examples:
+              - 251931ca-f4be-409c-beb8-be003b65e309
+          statusId:
+            type: integer
+            description: Id cтатуса заказа
+            examples:
+              - 3
+          status:
+            type: string
+            description: Статус заказа
+            examples:
+              - Возврат на склад
+          comment:
+            type: string
+            description: Комментарий курьера
+            examples:
+              - 'Покупатель не отвечает на звонки'
+          orderDetails:
+            $ref: '#/components/messages/orderDetails/payload'
+          createdAt:
+            type: string
+            description: Дата и время создания заказа
+            examples:
+              - '2025-08-19T12:17:34Z'          
+
+    orderDetails:
+      messageId: orderDetailsMessage  
+      name: orderDetails
+      title: Детали заказа
+      summary: Сообщение содержит детали заказа    
+      tags:
+        - name: orders
+      payload:
+        type: object
+        description: Детали заказа
+        properties:
+          orderNumber:
+            type: integer
+            description: Номер заказа
+            examples:
+              - 741
+          address:
+            type: string
+            description: Адрес доставки
+            examples:
+              - г. Москва, Ленинский проспект 37, кв. 11
+          customerName:
+            type: string
+            description: Имя покупателя
+            examples:
+              - Иван Петров
+          customerPhone:
+            type: string
+            description: Телефон покупателя
+            examples:
+               - +7(910)564-88-77
+          comment:
+            type: string
+            description: Комментарий покупателя
+            examples:
+              - 'Позвоните за 30 минут до приезда'       
+  
+  securitySchemes:
+    kafkaEventStreams:
+      type: scramSha512
+      description: Учетные данные потоков событий
+ 
