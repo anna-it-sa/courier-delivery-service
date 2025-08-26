@@ -50,12 +50,12 @@ components:
         type: object
         properties:
           orderId:
-            type: integer
+            type: string
             description: UUID заказа
             examples:
               - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
           customerId:
-            type: integer
+            type: string
             description: UUID покупателя
             examples:
               - 251931ca-f4be-409c-beb8-be003b65e309
@@ -72,12 +72,12 @@ components:
         type: object
         properties:
           orderId:
-            type: integer
+            type: string
             description: UUID заказа
             examples:
               - 8edea954-ee3c-471a-9f02-fc6aa9d67e70
           customerId:
-            type: integer
+            type: string
             description: UUID покупателя
             examples:
               - 251931ca-f4be-409c-beb8-be003b65e309
