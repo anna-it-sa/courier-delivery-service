@@ -1,5 +1,3 @@
-```plantuml
-
 @startuml
 actor "Курьер" as user
 participant "Мобильное приложение" as app
@@ -34,5 +32,3 @@ else Загрузка новых заказов из сервиса заказо
 end
 end
 @enduml
-
-```
