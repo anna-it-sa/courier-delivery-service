@@ -12,6 +12,13 @@
 
 
 **Список документации** (в разработке, будет пополняться):
+ 
+- API спецификации:
+  - Курьер REST API (OpenAPI 3.0) [.md](https://github.com/anna-it-sa/courier-delivery-service/blob/main/rest_api_courier.md)  [.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/rest_api_courier.yml)
+  - AsyncAPI Сервис заказов [v2.md](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.md)  [v2.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.yaml)  [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v3.yaml)
+  - AsyncAPI Сервис доставки [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_delivery_v3.yaml) 
+
+
 - Диаграммы последовательности:
   <details open>
   <summary>Авторизация курьера в приложении</summary>
@@ -83,9 +90,3 @@
       end
   ```
   </details>  
- 
-- API спецификации:
-  - Курьер REST API (OpenAPI 3.0) [.md](https://github.com/anna-it-sa/courier-delivery-service/blob/main/rest_api_courier.md)  [.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/rest_api_courier.yml)
-  - AsyncAPI Сервис заказов [v2.md](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.md)  [v2.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.yaml)  [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v3.yaml)
-  - AsyncAPI Сервис доставки [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_delivery_v3.yaml) 
-
