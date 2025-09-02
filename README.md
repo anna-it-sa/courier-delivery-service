@@ -13,7 +13,7 @@
 
 **Список документации** (в разработке, будет пополняться):
 - Диаграммы последовательности:
-  <details>
+  <details open>
   <summary>Авторизация курьера в приложении</summary>
 
   ```mermaid
@@ -47,7 +47,7 @@
       end
   ```
   </details>
-  <details>
+  <details open>
   <summary>Получение списка заказов</summary>
     
   ```mermaid
