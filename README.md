@@ -18,7 +18,48 @@
   - AsyncAPI Сервис заказов [v2.md](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.md)  [v2.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v2.yaml)  [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_order_v3.yaml)
   - AsyncAPI Сервис доставки [v3.yaml](https://github.com/anna-it-sa/courier-delivery-service/blob/main/kafka_api_delivery_v3.yaml) 
 
-
+- ER диаграмма:
+  <details open>
+  <summary>Отношения сущностей БД</summary>
+  
+   ```mermaid
+   erDiagram
+     CUSTOMER ||--o{ ORDER : places
+     COURIER ||--o{ ORDER : accepts
+     ORDER ||--|| ORDER_DETAILS : contains
+     
+     COURIER {
+         string id PK
+         string name
+         string phone
+         string username
+         string password        
+     }    
+     CUSTOMER {
+         string id PK
+         string name
+         string phone
+         string username
+         string password        
+     }
+     ORDER {
+         string id PK
+         string customerId FK
+         string courierId FK        
+         date orderDate        
+         string status
+     }
+     ORDER_DETAILS {
+         string id PK
+         string orderId FK
+         string deliveryAddress
+         string recepientName
+         string recepientPhone   
+         date deliveryDate     
+     }   
+  ```    
+  </details> 
+  
 - Диаграммы последовательности:
   <details open>
   <summary>Авторизация курьера в приложении</summary>
